@@ -1,42 +1,45 @@
-import { useEffect } from 'react'
-import { ThemeProvider, useTheme } from './context/ThemeContext'
-import Navbar from './components/Navbar'
-import Hero from './components/Hero'
-import About from './components/About'
-import Technologies from './components/Technologies'
-import Projects from './components/Projects'
-import Contact from './components/Contact'
-import Footer from './components/footer'
+import { useEffect, useMemo, useState } from 'react'
+import { ArrowUpRight, Check, Download, Github, Linkedin, Mail, Menu, X } from 'lucide-react'
 import './index.css'
 
-function AppContent() {
-  const { language } = useTheme()
-
-  useEffect(() => {
-    document.documentElement.lang = language
-  }, [language])
-
-  return (
-    <div className="min-h-screen bg-black text-white">
-      <Navbar />
-      <main>
-        <Hero />
-        <About />
-        <Technologies />
-        <Projects />
-        <Contact />
-      </main>
-      <Footer />
-    </div>
-  )
+const birthDate = new Date('2007-12-21T00:00:00')
+const ageAt = (date) => {
+  let age = date.getFullYear() - birthDate.getFullYear()
+  const birthdayPassed = date.getMonth() > birthDate.getMonth() || (date.getMonth() === birthDate.getMonth() && date.getDate() >= birthDate.getDate())
+  return birthdayPassed ? age : age - 1
 }
 
+const projects = [
+  { name: "M Noir's", type: 'DTC e-commerce venture', description: 'A direct-to-consumer pet-products venture covering sourcing, catalog structure, product variants, pricing and storefront optimization.', stack: ['Shopify', 'Google Sheets', 'Unit economics'], detail: 'Built the control model for expenses, subscriptions, margins, CAC and target ROAS.' },
+  { name: "Tot's", type: 'Web development project', description: 'A responsive business website developed from requirements gathering through deployment, with UX, SEO and performance in mind.', stack: ['Responsive Web Design', 'UX/UI', 'SEO'], detail: 'Translated business requirements into a focused, deployable web experience.' },
+  { name: 'Portfolio - Tobias Pedrouzo', type: 'Personal web development project', description: 'An evolving professional portfolio for presenting development work, technical capabilities and the intersection of technology and business.', stack: ['Full-stack web development', 'Responsive design', 'Performance'], detail: 'Built and continuously improve the product, architecture and user experience.' },
+]
+
+const experience = [
+  { period: '2026 - Present', company: 'Happy House', role: 'Administrative Support | Product Catalog & Pricing', bullets: ['Maintain product catalogs in Microsoft Excel with product information, pricing, images and formulas.', 'Cross-check quotations, invoices and internal records for prices, discounts, quantities, totals and specifications.', 'Organize product files and commercial documentation for consistency across working materials.'] },
+  { period: 'Jan 2026 - Jul 2026', company: 'GoTeam Games', role: 'Accounting Administrator | Part-time, Remote', bullets: ['Managed billing links and client payment processing while supporting accounts receivable tracking.', 'Organized business documentation, communication channels and corporate account information for operational control.'] },
+]
+
 function App() {
-  return (
-    <ThemeProvider>
-      <AppContent />
-    </ThemeProvider>
-  )
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [copied, setCopied] = useState(false)
+  const age = useMemo(() => ageAt(new Date()), [])
+  useEffect(() => { document.documentElement.lang = 'en'; document.title = 'Tobias Pedrouzo | Full Stack Developer' }, [])
+  const closeMenu = () => setMenuOpen(false)
+  const copyEmail = async () => { await navigator.clipboard?.writeText('pedrouzotobias@gmail.com'); setCopied(true); setTimeout(() => setCopied(false), 1800) }
+
+  return <div className="site-shell">
+    <header className="nav"><a className="brand" href="#top">TP<span>.</span></a><button className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)} aria-label={menuOpen ? 'Close menu' : 'Open menu'}>{menuOpen ? <X /> : <Menu />}</button><nav className={menuOpen ? 'nav-links open' : 'nav-links'}>{['projects', 'about', 'experience', 'skills', 'contact'].map((item) => <a key={item} href={`#${item}`} onClick={closeMenu}>{item}</a>)}</nav><a className="nav-cta" href="/Tobias_Pedrouzo_Resume_Final.pdf" download>Download CV <Download size={15} /></a></header>
+    <main id="top">
+      <section className="hero section-wrap"><div className="eyebrow">Buenos Aires, Argentina <span>·</span> Available for junior opportunities</div><h1>Full Stack Developer<br /><em>building useful products.</em></h1><p className="hero-copy">I build digital experiences with a practical understanding of software, economics and business operations.</p><div className="hero-actions"><a className="button button-primary" href="#projects">View selected projects <ArrowUpRight size={17} /></a><a className="text-link" href="/Tobias_Pedrouzo_Resume_Final.pdf" download>Download CV <Download size={16} /></a></div><div className="hero-meta"><span>Currently studying Economics & Finance at UADE</span><span>18 years old</span><span>Spanish · English · Portuguese</span></div></section>
+      <section id="projects" className="section-wrap section"><div className="section-heading"><div><span className="section-kicker">01 / Selected work</span><h2>Projects with a point of view.</h2></div><p>Focused work across web development, e-commerce and the systems behind day-to-day business.</p></div><div className="project-grid">{projects.map((project, index) => <article className={`project-card card-${index + 1}`} key={project.name}><div className="project-top"><span className="project-index">0{index + 1}</span><span className="project-type">{project.type}</span></div><h3>{project.name}</h3><p>{project.description}</p><div className="project-detail"><span>Contribution</span><strong>{project.detail}</strong></div><div className="stack">{project.stack.map((tech) => <span key={tech}>{tech}</span>)}</div></article>)}</div></section>
+      <section id="about" className="section-wrap section split-section"><div><span className="section-kicker">02 / About</span><h2>Technology that understands context.</h2></div><div className="about-copy"><p>I'm Tobias, a Full Stack Developer and Economics & Finance student based in Buenos Aires. I build responsive web experiences and practical digital products, while developing a stronger understanding of pricing, payments, operations and unit economics.</p><p>My work ranges from a personal portfolio and business websites to a direct-to-consumer e-commerce venture. I enjoy the space where technical decisions meet real constraints: clear product structure, usable interfaces, reliable information and measurable business logic.</p><div className="about-facts"><span><strong>{age}</strong> years old</span><span><strong>2030</strong> expected graduation</span><span><strong>B1-B2</strong> English</span></div></div></section>
+      <section id="experience" className="section-wrap section"><div className="section-heading"><div><span className="section-kicker">03 / Experience</span><h2>Operations, accuracy and ownership.</h2></div><p>Professional experience grounded in documentation, pricing, payments and operational control.</p></div><div className="timeline">{experience.map((item) => <article className="timeline-item" key={item.company}><div className="timeline-period">{item.period}</div><div><h3>{item.company}</h3><p className="role">{item.role}</p><ul>{item.bullets.map((bullet) => <li key={bullet}>{bullet}</li>)}</ul></div></article>)}</div></section>
+      <section id="skills" className="section-wrap section skills-section"><div><span className="section-kicker">04 / Toolkit</span><h2>Capabilities I use to build.</h2></div><div className="skills-grid"><div><h3>Technical</h3><p>Full-Stack Web Development<br />Responsive Web Design<br />UX/UI Design<br />Search Engine Optimization</p></div><div><h3>Tools & platforms</h3><p>Microsoft Excel<br />Google Sheets<br />VS Code<br />Shopify<br />Stripe</p></div><div><h3>Business & operations</h3><p>Accounts Receivable<br />Payment Processing<br />Pricing Support<br />Product Data Management<br />Documentation Control</p></div></div></section>
+      <section className="section-wrap section education-section"><div><span className="section-kicker">05 / Education</span><h2>Learning across technology and finance.</h2></div><div className="education-list"><div><span>Expected 2030</span><h3>Universidad Argentina de la Empresa (UADE)</h3><p>Economics & Finance · Statistics, Financial Systems, Accounting and Macroeconomics</p></div><div><span>2024 - 2026</span><h3>Digital House</h3><p>AI for Digital Innovation - Globant x Digital House (2026)<br />Full Stack Web Development · Design Thinking · UX/UI Design</p></div><div><span>Completed</span><h3>Secondary Education</h3><p>Uruguay · International Baccalaureate (IB)-based academic model</p></div></div></section>
+      <section id="contact" className="contact-section"><div className="section-wrap contact-inner"><div><span className="section-kicker">06 / Contact</span><h2>Let's build something<br /><em>useful together.</em></h2></div><div className="contact-links"><a href="mailto:pedrouzotobias@gmail.com"><Mail size={18} />pedrouzotobias@gmail.com</a><a href="https://www.linkedin.com/in/tobiaspedrouzo/" target="_blank" rel="noreferrer"><Linkedin size={18} />LinkedIn <ArrowUpRight size={15} /></a><a href="https://github.com/srbias-code" target="_blank" rel="noreferrer"><Github size={18} />GitHub <ArrowUpRight size={15} /></a><button className="copy-button" onClick={copyEmail}>{copied ? <Check size={17} /> : <Mail size={17} />}{copied ? 'Email copied' : 'Copy email'}</button></div></div></section>
+    </main><footer className="footer section-wrap"><span>© {new Date().getFullYear()} Tobias Pedrouzo</span><span>Full Stack Developer · Economics & Finance</span></footer>
+  </div>
 }
 
 export default App
